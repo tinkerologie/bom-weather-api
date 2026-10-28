@@ -81,8 +81,12 @@ async def main() -> None:
 
     today = daily.days[0]
     print(f"{town.name} ({distance} km away), station {station.name}")
-    print(f"Now: {observation.temperature} °C, feels like {observation.apparent_temperature} °C")
-    print(f"Today: {today.short_text} Max {today.temp_max} °C, {today.rain_chance}% chance of rain")
+    print(
+        f"Now: {observation.temperature} °C, feels like {observation.apparent_temperature} °C"
+    )
+    print(
+        f"Today: {today.short_text} Max {today.temp_max} °C, {today.rain_chance}% chance of rain"
+    )
     print(f"{len(hourly.hours)} hourly forecasts, {len(warnings)} active warnings")
 
 
