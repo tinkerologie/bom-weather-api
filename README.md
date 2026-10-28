@@ -152,7 +152,7 @@ All models are frozen dataclasses exported from `bom_weather_api`.
 |---|---|
 | `Coordinate` | `latitude`, `longitude`, `geohash`, `distance_to()` |
 | `ForecastLocation` | `aac`, `name`, `state`, `coordinate`, `timezone`, `product_state` |
-| `Station` | `id`, `name`, `state`, `coordinate`, `wmo_id` |
+| `Station` | `id`, `name`, `state`, `coordinate`, `wmo_id`, `observes` |
 | `Observation` | `temperature`, `apparent_temperature`, `dew_point`, `humidity`, `pressure`, `wind_speed`, `wind_direction`, `wind_gust`, `rain_since_9am`, `observed_at`, … |
 | `DailyForecast` | `issued_at`, `next_issue_at`, `days`, `now` |
 | `DailyForecastDay` | `date`, `temp_max`, `temp_min`, `short_text`, `extended_text`, `rain_chance`, `rain_amount_range`, `uv_index`, `fire_danger`, `sunrise`, `sunset`, … |

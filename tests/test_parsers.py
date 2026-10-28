@@ -221,6 +221,8 @@ def test_parse_stations_and_observation_gaps() -> None:
         ("1", "One", False),
         ("2", "TWO", True),
     ]
+    # "-" is not a measurement, and a station without a period observes nothing.
+    assert [s.observes for s in stations] == [frozenset({"humidity"}), frozenset()]
     one = parse_observation(OBSERVATIONS, "1")
     assert one is not None
     assert one.temperature is None

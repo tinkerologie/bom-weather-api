@@ -209,6 +209,28 @@ def parse_precis(content: bytes, aac: str) -> DailyForecast:
 # --- Observations (state observation XML) ------------------------------------
 
 
+# Observation element types that show a station measures each quantity.
+_MEASUREMENTS = {
+    "air_temperature": "temperature",
+    "rel-humidity": "humidity",
+    "wind_spd_kmh": "wind",
+    "msl_pres": "pressure",
+    "rainfall": "rain",
+}
+
+
+def _observes(element: Element) -> frozenset[str]:
+    period = element.find("period")
+    if period is None:
+        return frozenset()
+    return frozenset(
+        _MEASUREMENTS[kind]
+        for item in period.iter("element")
+        if (kind := item.get("type", "")) in _MEASUREMENTS
+        and _float(item.text) is not None
+    )
+
+
 def _station(element: Element, state: str) -> Station | None:
     station_id = _str(element.get("bom-id"))
     if not station_id:
@@ -226,6 +248,7 @@ def _station(element: Element, state: str) -> Station | None:
         else None,
         wmo_id=_str(element.get("wmo-id")),
         height=_float(element.get("stn-height")),
+        observes=_observes(element),
     )
 
 

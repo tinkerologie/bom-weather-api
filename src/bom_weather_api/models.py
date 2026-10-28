@@ -114,6 +114,10 @@ class Station:
     coordinate: Coordinate | None = None
     wmo_id: str | None = None
     height: float | None = None
+    observes: frozenset[str] = frozenset()
+    """Measurements in the station's latest observation: ``temperature``,
+    ``humidity``, ``wind``, ``pressure`` and ``rain``. Beacons and portable
+    stations often report only some of them."""
 
 
 @dataclass(frozen=True, slots=True, kw_only=True)

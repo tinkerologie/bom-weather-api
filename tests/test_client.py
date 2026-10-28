@@ -66,12 +66,25 @@ async def test_nearest(client: BomClient) -> None:
 
 async def test_get_stations(client: BomClient, transport: FakeTransport) -> None:
     stations = await client.get_stations("qld")
-    assert {s.id for s in stations} == {"040913", "040211", "040842", "041529"}
+    assert {s.id for s in stations} == {
+        "040913",
+        "040211",
+        "040842",
+        "041529",
+        "250048",
+        "040926",
+    }
     brisbane = next(s for s in stations if s.id == "040913")
     assert brisbane.name == "Brisbane"
     assert brisbane.state == "QLD"
     assert brisbane.wmo_id == "94576"
     assert brisbane.coordinate == BRISBANE
+    assert brisbane.observes == {"temperature", "humidity", "wind", "pressure", "rain"}
+    # A portable fire-weather station and a navigation beacon report only part
+    # of a full observation.
+    by_id = {s.id: s for s in stations}
+    assert by_id["250048"].observes == {"temperature", "humidity", "rain"}
+    assert by_id["040926"].observes == {"wind"}
     assert transport.requests == ["/anon/gen/fwo/IDQ60920.xml"]
 
 
