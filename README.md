@@ -1,15 +1,106 @@
-# bom-weather-api
+<div align="center">
 
-Async Python client for Australian [Bureau of Meteorology](https://www.bom.gov.au/)
-(BoM) weather data: town forecasts, station observations, hourly forecasts and
-warnings. Built for the [Home Assistant integration](https://github.com/tinkerologie/ha-bom-australia),
-usable anywhere.
+# BoM Weather API
+
+**Async Python client for Australian Bureau of Meteorology weather data**
+
+[![PyPI](https://img.shields.io/pypi/v/bom-weather-api?style=flat-square)](https://pypi.org/project/bom-weather-api/)
+[![Python](https://img.shields.io/pypi/pyversions/bom-weather-api?style=flat-square)](https://pypi.org/project/bom-weather-api/)
+[![CI](https://img.shields.io/github/actions/workflow/status/tinkerologie/bom-weather-api/ci.yml?branch=main&style=flat-square&label=CI)](https://github.com/tinkerologie/bom-weather-api/actions/workflows/ci.yml)
+[![Coverage](https://img.shields.io/codecov/c/github/tinkerologie/bom-weather-api?style=flat-square)](https://codecov.io/gh/tinkerologie/bom-weather-api)
+[![License](https://img.shields.io/github/license/tinkerologie/bom-weather-api?style=flat-square)](LICENSE)
+
+</div>
+
+BoM Weather API gives Python code typed, async access to Australian
+[Bureau of Meteorology](https://www.bom.gov.au/) (BoM) data: station
+observations, 7-day town forecasts, hourly forecasts and weather warnings.
+It was built for the [Bureau of Meteorology integration for Home Assistant](https://github.com/tinkerologie/ha-bom-australia),
+and works in any asyncio application.
+
+## Contents
+
+- [Features](#features)
+- [Installation](#installation)
+- [Quick start](#quick-start)
+- [Data sources](#data-sources)
+- [API reference](#api-reference)
+- [Error handling](#error-handling)
+- [Responsible use](#responsible-use)
+- [Development](#development)
+- [Licence and attribution](#licence-and-attribution)
+
+## Features
+
+- **Async throughout**: built on `aiohttp` and `aioftp`, and accepts your own `aiohttp.ClientSession`.
+- **Fully typed**: frozen dataclass models, ships `py.typed`, and passes `mypy --strict`.
+- **Tolerates missing data**: BoM regularly omits values, such as today's minimum temperature after the morning or today's icon late in the evening. Every field is optional, and a missing value is `None` rather than an exception.
+- **Built on official feeds**: forecasts and observations come from BoM's sanctioned anonymous FTP products.
+- **Location helpers**: find the nearest forecast towns and observation stations to any coordinate.
+- **Predictable errors**: a single exception hierarchy; transport exceptions never leak.
+- **Tested**: 100% line and branch coverage against real BoM responses, on Python 3.12, 3.13, 3.14 and 3.15.
+
+## Installation
 
 ```bash
 pip install bom-weather-api
 ```
 
-Supports Python 3.12 to 3.15.
+or with [uv](https://docs.astral.sh/uv/):
+
+```bash
+uv add bom-weather-api
+```
+
+Requires Python 3.12 or later, and outbound FTP access (port 21) to `ftp.bom.gov.au`.
+
+## Quick start
+
+```python
+import asyncio
+
+from bom_weather_api import BomClient, Coordinate
+
+
+async def main() -> None:
+    home = Coordinate(latitude=-27.47, longitude=153.02)
+
+    async with BomClient() as client:
+        # Find the nearest forecast town and observation station.
+        towns = await client.get_forecast_locations()
+        town, distance = BomClient.nearest(home, towns, limit=1)[0]
+
+        stations = await client.get_stations(town.product_state)
+        station, _ = BomClient.nearest(town.coordinate, stations, limit=1)[0]
+
+        # Fetch current conditions, forecasts and warnings.
+        observation = await client.get_observation(town.product_state, station.id)
+        daily = await client.get_daily_forecast(town)
+        hourly = await client.get_hourly_forecast(town.coordinate)
+        warnings = await client.get_warnings(town.coordinate, details=True)
+
+    today = daily.days[0]
+    print(f"{town.name} ({distance} km away), station {station.name}")
+    print(f"Now: {observation.temperature} °C, feels like {observation.apparent_temperature} °C")
+    print(f"Today: {today.short_text} Max {today.temp_max} °C, {today.rain_chance}% chance of rain")
+    print(f"{len(hourly.hours)} hourly forecasts, {len(warnings)} active warnings")
+
+
+asyncio.run(main())
+```
+
+### Sharing a session
+
+Pass an existing `aiohttp.ClientSession` to reuse its connections. The client
+never closes a session it did not create.
+
+```python
+import aiohttp
+
+async with aiohttp.ClientSession() as session:
+    client = BomClient(session)
+    forecast = await client.get_daily_forecast(town)
+```
 
 ## Data sources
 
@@ -19,84 +110,106 @@ Supports Python 3.12 to 3.15.
 | Hourly forecasts, warnings, and the extended text, UV, fire danger and sun times in the daily forecast | The undocumented JSON API behind the BoM app (`api.weather.bom.gov.au`) |
 
 The FTP products are free to access for non-commercial use. The app API is not
-a public BoM service and may change without notice. When the extras request
-fails, `get_daily_forecast` still returns the FTP forecast.
+a public BoM service and may change without notice. If its daily extras are
+unavailable, `get_daily_forecast` still returns the FTP forecast without them.
 
-The client always identifies itself with an honest User-Agent. It does not use
-the bom.gov.au website API (`api.bom.gov.au`), which blocks automated clients.
-Please poll politely: observations change every 10 minutes and town forecasts
-a few times a day.
+## API reference
 
-## Usage
+### `BomClient`
 
 ```python
-import asyncio
-
-from bom_weather_api import BomClient, Coordinate
-
-
-async def main() -> None:
-    async with BomClient() as client:
-        home = Coordinate(latitude=-27.47, longitude=153.02)
-
-        locations = await client.get_forecast_locations()
-        town, distance = BomClient.nearest(home, locations, limit=1)[0]
-
-        stations = await client.get_stations(town.product_state)
-        station, _ = BomClient.nearest(town.coordinate, stations, limit=1)[0]
-
-        observation = await client.get_observation(town.product_state, station.id)
-        daily = await client.get_daily_forecast(town)
-        hourly = await client.get_hourly_forecast(town.coordinate)
-        warnings = await client.get_warnings(town.coordinate, details=True)
-
-        print(town.name, observation.temperature, daily.days[0].short_text)
-        print(len(hourly.hours), "hours,", len(warnings), "warnings")
-
-
-asyncio.run(main())
+BomClient(
+    session: aiohttp.ClientSession | None = None,
+    *,
+    transport: FileTransport | None = None,  # defaults to FtpTransport()
+    timeout: float = 30.0,
+    user_agent: str = DEFAULT_USER_AGENT,
+)
 ```
 
-Pass an existing `aiohttp.ClientSession` as the first argument to share
-connections; the client never closes a session it did not create.
+| Method | Returns | Description |
+|---|---|---|
+| `get_forecast_locations()` | `list[ForecastLocation]` | Every town BoM issues a forecast for (about 680) |
+| `get_stations(state)` | `list[Station]` | Observation stations in a state: `NSW`, `VIC`, `QLD`, `SA`, `WA`, `TAS` or `NT` (ACT stations are in `NSW`) |
+| `get_observation(state, station_id)` | `Observation` | Latest observation from a station |
+| `get_daily_forecast(location, *, extras=True)` | `DailyForecast` | 7-day town forecast; `extras` adds extended text, UV, fire danger and sun times |
+| `get_hourly_forecast(coordinate)` | `HourlyForecast` | Hourly forecast for about the next 72 hours |
+| `get_warnings(coordinate, *, details=False)` | `list[WeatherWarning]` | Current warnings, excluding cancellations; `details` adds each warning's full message |
+| `get_warning(warning_id)` | `WarningDetails` | The full plain-text message of a warning |
+| `BomClient.nearest(coordinate, items, *, limit=None)` | `list[tuple[item, float]]` | Towns or stations sorted by distance in km |
 
-### API
+`BomClient` is an async context manager; `close()` releases a session the client created itself.
 
-| Method | Returns |
+### Models
+
+All models are frozen dataclasses exported from `bom_weather_api`.
+
+| Model | Key fields |
 |---|---|
-| `get_forecast_locations()` | Every BoM forecast town (`ForecastLocation`, about 680) |
-| `get_stations(state)` | Observation stations in a state (`NSW`, `VIC`, `QLD`, `SA`, `WA`, `TAS`, `NT`; ACT is in `NSW`) |
-| `get_observation(state, station_id)` | Latest `Observation` |
-| `get_daily_forecast(location, extras=True)` | 7-day `DailyForecast` |
-| `get_hourly_forecast(coordinate)` | `HourlyForecast` (about 72 hours) |
-| `get_warnings(coordinate, details=False)` | Current `WeatherWarning`s (cancellations excluded) |
-| `get_warning(warning_id)` | `WarningDetails` with the plain-text message |
-| `BomClient.nearest(coordinate, items, limit=None)` | Items sorted by distance in km |
+| `Coordinate` | `latitude`, `longitude`, `geohash`, `distance_to()` |
+| `ForecastLocation` | `aac`, `name`, `state`, `coordinate`, `timezone`, `product_state` |
+| `Station` | `id`, `name`, `state`, `coordinate`, `wmo_id` |
+| `Observation` | `temperature`, `apparent_temperature`, `dew_point`, `humidity`, `pressure`, `wind_speed`, `wind_direction`, `wind_gust`, `rain_since_9am`, `observed_at`, … |
+| `DailyForecast` | `issued_at`, `next_issue_at`, `days`, `now` |
+| `DailyForecastDay` | `date`, `temp_max`, `temp_min`, `short_text`, `extended_text`, `rain_chance`, `rain_amount_range`, `uv_index`, `fire_danger`, `sunrise`, `sunset`, … |
+| `HourlyForecast` / `HourlyForecastPoint` | `time`, `temperature`, `humidity`, `wind_speed`, `wind_direction`, `rain_chance`, `uv_index`, `is_night`, … |
+| `WeatherWarning` / `WarningDetails` | `id`, `type`, `title`, `phase`, `issued_at`, `expires_at`, `message` |
 
-Every model field is optional: BoM regularly omits values, such as today's
-minimum temperature after the morning or today's icon late in the evening.
+Units are metric: °C, km/h, hPa, mm and km. Times are timezone-aware `datetime` objects.
 
-### Errors
+## Error handling
 
-All errors derive from `BomError`:
+Every error raised by the client derives from `BomError`:
 
-- `BomConnectionError`, with subclass `BomTimeoutError`
-- `BomResponseError` (has `.status`), with subclasses:
-  - `BomNotFoundError`
-  - `BomRateLimitError` (has `.retry_after`)
-- `BomParseError`
+```text
+BomError
+├── BomConnectionError        the service could not be reached
+│   └── BomTimeoutError       the request timed out
+├── BomResponseError          unexpected HTTP or FTP status (.status)
+│   ├── BomNotFoundError      unknown station, warning or file
+│   └── BomRateLimitError     slow down (.retry_after, in seconds)
+└── BomParseError             the response had an unexpected format
+```
+
+```python
+from bom_weather_api import BomError, BomNotFoundError, BomRateLimitError
+
+try:
+    observation = await client.get_observation("QLD", "040913")
+except BomNotFoundError:
+    ...  # the station is not reporting; choose another one
+except BomRateLimitError as err:
+    ...  # retry after err.retry_after seconds
+except BomError:
+    ...  # any other failure
+```
+
+## Responsible use
+
+- The client identifies itself with an honest User-Agent. Please keep one that identifies your application.
+- Poll no more often than the data changes: observations update every 10 minutes, and town forecasts a few times a day.
+- This library does not use the bom.gov.au website API (`api.bom.gov.au`), which blocks automated clients.
+- The BoM FTP products are free for non-commercial use. For commercial use, see BoM's [data services](https://www.bom.gov.au/resources/data-services).
 
 ## Development
 
 ```bash
+git clone https://github.com/tinkerologie/bom-weather-api.git
+cd bom-weather-api
 uv sync
-uv run pytest --cov
-uv run ruff format . && uv run ruff check . && uv run mypy
+
+uv run pytest --cov                                         # tests, 100% coverage required
+uv run ruff format . && uv run ruff check . && uv run mypy  # format, lint, type-check
+uvx bandit --recursive src                                  # security scan
 ```
 
-Test fixtures are real BoM responses captured on 2026-10-28.
+Test fixtures in `tests/fixtures/` are real BoM responses captured on
+2026-10-28. Releases are published to PyPI from GitHub releases using trusted
+publishing; see [CHANGELOG.md](CHANGELOG.md) for the release history.
 
-## Licence
+## Licence and attribution
 
-Apache-2.0. Data © Commonwealth of Australia, Bureau of Meteorology. This
-project is not affiliated with or endorsed by the Bureau of Meteorology.
+Released under the [Apache License 2.0](LICENSE).
+
+Weather data © Commonwealth of Australia, Bureau of Meteorology. This project
+is not affiliated with or endorsed by the Bureau of Meteorology.
