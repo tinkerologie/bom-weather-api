@@ -353,3 +353,19 @@ async def test_external_session_not_closed(transport: FakeTransport) -> None:
 def test_default_transport() -> None:
     client = BomClient()
     assert type(client._transport).__name__ == "FtpTransport"
+
+
+async def test_unexpected_response_shape(
+    client: BomClient, mock_api: aiointercept
+) -> None:
+    """Parser failures on unexpected shapes surface as BomParseError."""
+    mock_api.get(
+        url(f"/locations/{BRISBANE_GEOHASH}/forecasts/hourly"), payload={"data": []}
+    )
+    with (
+        patch(
+            "bom_weather_api.client.parse_legacy_hourly", side_effect=KeyError("time")
+        ),
+        pytest.raises(BomParseError, match="Unexpected response format"),
+    ):
+        await client.get_hourly_forecast(BRISBANE)

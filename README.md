@@ -9,6 +9,8 @@ usable anywhere.
 pip install bom-weather-api
 ```
 
+Supports Python 3.12 to 3.15.
+
 ## Data sources
 
 | Data | Source |
