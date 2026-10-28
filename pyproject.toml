@@ -1,5 +1,5 @@
 [build-system]
-requires = ["hatchling"]
+requires = ["hatchling>=1.33"]
 build-backend = "hatchling.build"
 
 [project]
@@ -21,6 +21,7 @@ classifiers = [
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
     "Programming Language :: Python :: 3.14",
+    "Programming Language :: Python :: 3.15",
     "Topic :: Home Automation",
     "Typing :: Typed",
 ]
@@ -46,6 +47,10 @@ dev = [
     "ruff>=0.14",
     "types-defusedxml>=0.7.0.20260504",
 ]
+
+[tool.uv]
+# 0.13.4 fixes GHSA-hq85-5cpj-mr62 and GHSA-2cv4-cqwr-gwf7.
+required-version = ">=0.13.4"
 
 [tool.hatch.version]
 path = "src/bom_weather_api/_version.py"
@@ -97,5 +102,5 @@ branch = true
 source = ["bom_weather_api"]
 
 [tool.coverage.report]
-fail_under = 95
+fail_under = 100
 show_missing = true

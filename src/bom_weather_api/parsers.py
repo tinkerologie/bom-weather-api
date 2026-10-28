@@ -32,7 +32,8 @@ from .models import (
 )
 
 if TYPE_CHECKING:
-    from xml.etree.ElementTree import Element
+    # Type annotation only: all parsing goes through defusedxml.
+    from xml.etree.ElementTree import Element  # nosec B405
 
 _RANGE_RE = re.compile(r"(\d+(?:\.\d+)?)(?:\s*to\s*(\d+(?:\.\d+)?))?\s*mm")
 _PERCENT_RE = re.compile(r"(\d+)\s*%")

@@ -73,3 +73,28 @@ async def test_fetch_timeout() -> None:
         pytest.raises(BomTimeoutError),
     ):
         await transport.fetch("/anon/file.txt")
+
+
+async def test_fetch_size_reports_missing_file() -> None:
+    """A 550 reply to SIZE is a missing file; RETR is never attempted."""
+    transport = FtpTransport("127.0.0.1", timeout=5)
+    commands: list[str | None] = []
+
+    async def command(
+        self: aioftp.Client, cmd: str | None = None, *args: object, **kwargs: object
+    ) -> None:
+        commands.append(cmd)
+        if cmd and cmd.startswith("SIZE"):
+            raise aioftp.StatusCodeError(
+                aioftp.Code("213"), aioftp.Code("550"), "missing"
+            )
+
+    with (
+        patch.object(aioftp.Client, "connect"),
+        patch.object(aioftp.Client, "login"),
+        patch.object(aioftp.Client, "quit"),
+        patch.object(aioftp.Client, "command", command),
+        pytest.raises(BomNotFoundError),
+    ):
+        await transport.fetch("/anon/missing.txt")
+    assert commands == ["TYPE I", "SIZE /anon/missing.txt"]

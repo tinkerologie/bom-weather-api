@@ -18,7 +18,7 @@ integration. Python 3.12+, `src/` layout, hatchling, uv.
 - Map transport errors to the `BomError` hierarchy; never leak `aiohttp` or `aioftp` exceptions.
 - Never use `api.bom.gov.au` (the bom.gov.au website API) or impersonate a browser. Send the honest default User-Agent.
 - Keep the public API exported from `__init__.py` and typed (`mypy --strict` must pass).
-- Coverage must stay ≥ 95%.
+- Coverage must stay at 100% (enforced by `fail_under = 100`).
 
 ## Commands
 

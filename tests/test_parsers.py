@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from datetime import UTC, date, datetime, timedelta, timezone
+import struct
 
 import pytest
 
@@ -20,6 +21,7 @@ from bom_weather_api.parsers import (
     merge_legacy_daily,
     parse_legacy_hourly,
     parse_legacy_warnings,
+    parse_locations,
     parse_observation,
     parse_precis,
     parse_stations,
@@ -256,3 +258,44 @@ def test_parse_legacy_warnings_gaps() -> None:
     warnings = parse_legacy_warnings({"data": [None, {"id": ""}, {"id": 5}]})
     assert [w.id for w in warnings] == ["5"]
     assert not warnings[0].is_cancelled
+
+
+def _dbf(records: list[bytes]) -> bytes:
+    """Build a dBase III file with PRECIS_FLG, AAC, PT_NAME, LAT and LON fields."""
+    fields = [
+        (b"PRECIS_FLG", 1),
+        (b"AAC", 9),
+        (b"PT_NAME", 10),
+        (b"LAT", 5),
+        (b"LON", 5),
+    ]
+    header_len = 32 + 32 * len(fields) + 1
+    record_len = 1 + sum(length for _, length in fields)
+    header = bytearray(32)
+    struct.pack_into("<IHH", header, 4, len(records), header_len, record_len)
+    for name, length in fields:
+        descriptor = bytearray(32)
+        descriptor[: len(name)] = name
+        descriptor[11] = ord("C")
+        descriptor[16] = length
+        header += descriptor
+    return bytes(header) + b"\x0d" + b"".join(records)
+
+
+def test_parse_locations_record_handling() -> None:
+    def record(flag: bytes, aac: bytes, name: bytes) -> bytes:
+        return flag + b"1" + aac.ljust(9) + name.ljust(10) + b"-27.5" + b"153.0"
+
+    content = _dbf(
+        [
+            record(b" ", b"QLD_PT001", b"Bundaberg"),
+            record(b"*", b"QLD_PT002", b"Deleted"),
+            record(b" ", b"QLD_PT003", "Gympie é".encode("latin-1")),
+            record(b" ", b"QLD_PT004", b"Short")[:10],
+        ]
+    )
+    locations = parse_locations(content)
+    assert [(loc.aac, loc.name) for loc in locations] == [
+        ("QLD_PT001", "Bundaberg"),
+        ("QLD_PT003", "Gympie é"),
+    ]
