@@ -135,5 +135,34 @@
         </level>
       </period>
     </station>
+    <station wmo-id="99083" bom-id="250048" tz="Australia/Brisbane" stn-name="PORTABLE QFRB" stn-height="106.00" type="AWS" lat="-27.1884" lon="152.9841" forecast-district-id="QLD_FA001" description="PORTABLE QFDB BR">
+      <period index="0" time-utc="2026-10-28T02:40:00+00:00" time-local="2026-10-28T12:40:00+10:00">
+        <level index="0" type="surface">
+          <element units="Celsius" type="delta_t">8.8</element>
+          <element units="Celsius" type="air_temperature">28.7</element>
+          <element units="Celsius" type="dew_point">14.0</element>
+          <element units="mm" type="rain_hour">0.0</element>
+          <element units="mm" type="rain_ten">0.0</element>
+          <element units="%" type="rel-humidity">40</element>
+          <element start-time-local="2026-10-28T09:00:00+10:00" end-time-local="2026-10-28T12:40:00+10:00" duration="220" start-time-utc="2026-10-27T23:00:00+00:00" end-time-utc="2026-10-28T02:40:00+00:00" units="mm" type="rainfall">0.0</element>
+          <element start-time-local="2026-10-27T09:00:00+10:00" end-time-local="2026-10-28T09:00:00+10:00" duration="1440" start-time-utc="2026-10-26T23:00:00+00:00" end-time-utc="2026-10-27T23:00:00+00:00" units="mm" type="rainfall_24hr">0.0</element>
+        </level>
+      </period>
+    </station>
+    <station wmo-id="94590" bom-id="040926" tz="Australia/Brisbane" stn-name="INNER RECIPROCAL MARKER" stn-height="10.00" type="AWS" lat="-27.2633" lon="153.2419" forecast-district-id="QLD_MW013" description="Inner Beacon">
+      <period index="0" time-utc="2026-10-28T02:50:00+00:00" time-local="2026-10-28T12:50:00+10:00" wind-src="TMD">
+        <level index="0" type="surface">
+          <element units="km/h" type="gust_kmh">0</element>
+          <element units="knots" type="wind_gust_spd">0</element>
+          <element type="wind_dir">CALM</element>
+          <element units="deg" type="wind_dir_deg">3</element>
+          <element units="km/h" type="wind_spd_kmh">0</element>
+          <element units="knots" type="wind_spd">0</element>
+          <element start-time-local="2026-10-28T00:00:00+10:00" end-time-local="2026-10-29T00:00:00+10:00" start-time-utc="2026-10-27T14:00:00+00:00" end-time-utc="2026-10-28T14:00:00+00:00" units="knots" type="maximum_gust_spd" instance="running" time-utc="2026-10-28T01:57:00+00:00" time-local="2026-10-28T11:57:00+10:00">9</element>
+          <element start-time-local="2026-10-28T00:00:00+10:00" end-time-local="2026-10-29T00:00:00+10:00" start-time-utc="2026-10-27T14:00:00+00:00" end-time-utc="2026-10-28T14:00:00+00:00" units="km/h" type="maximum_gust_kmh" instance="running" time-utc="2026-10-28T01:57:00+00:00" time-local="2026-10-28T11:57:00+10:00">17</element>
+          <element start-time-local="2026-10-28T00:00:00+10:00" end-time-local="2026-10-29T00:00:00+10:00" start-time-utc="2026-10-27T14:00:00+00:00" end-time-utc="2026-10-28T14:00:00+00:00" type="maximum_gust_dir" instance="running" time-utc="2026-10-28T01:57:00+00:00" time-local="2026-10-28T11:57:00+10:00">NNE</element>
+        </level>
+      </period>
+    </station>
   </observations>
 </product>

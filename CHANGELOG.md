@@ -6,6 +6,15 @@ project follows [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-10-28
+
+### Added
+
+- `Station.observes`: the measurements in a station's latest observation
+  (`temperature`, `humidity`, `wind`, `pressure`, `rain`). Beacons and portable
+  stations often report only some of them, so callers can prefer stations
+  with complete observations.
+
 ## [0.1.0] - 2026-10-28
 
 ### Added
