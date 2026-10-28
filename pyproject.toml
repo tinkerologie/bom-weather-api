@@ -1,0 +1,101 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "bom-weather-api"
+dynamic = ["version"]
+description = "Async Python client for the Australian Bureau of Meteorology weather API"
+readme = "README.md"
+license = "Apache-2.0"
+license-files = ["LICENSE"]
+requires-python = ">=3.12"
+authors = [{ name = "Ruaan Deysel", email = "ruaan.deysel@gmail.com" }]
+keywords = ["bom", "bureau of meteorology", "weather", "australia", "asyncio", "home-assistant"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Framework :: AsyncIO",
+    "Intended Audience :: Developers",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Topic :: Home Automation",
+    "Typing :: Typed",
+]
+dependencies = [
+    "aioftp>=0.21.3",
+    "aiohttp>=3.10.0",
+    "defusedxml>=0.7.1",
+]
+
+[project.urls]
+Homepage = "https://github.com/tinkerologie/bom-weather-api"
+Issues = "https://github.com/tinkerologie/bom-weather-api/issues"
+Changelog = "https://github.com/tinkerologie/bom-weather-api/blob/main/CHANGELOG.md"
+
+[dependency-groups]
+dev = [
+    "aiointercept>=1.0.0",
+    "mypy>=1.18",
+    "pre-commit>=4.3",
+    "pytest>=8.4",
+    "pytest-asyncio>=1.2",
+    "pytest-cov>=7.0",
+    "ruff>=0.14",
+    "types-defusedxml>=0.7.0.20260504",
+]
+
+[tool.hatch.version]
+path = "src/bom_weather_api/_version.py"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/bom_weather_api"]
+
+[tool.hatch.build.targets.sdist]
+include = ["src", "tests", "README.md", "CHANGELOG.md", "LICENSE"]
+
+[tool.ruff]
+target-version = "py312"
+line-length = 88
+
+[tool.ruff.lint]
+select = [
+    "ASYNC", "B", "C4", "D", "DTZ", "E", "F", "FURB", "I", "LOG", "PERF", "PIE",
+    "PL", "PT", "PTH", "RET", "RUF", "S", "SIM", "TC", "UP", "W",
+]
+ignore = [
+    "D203",    # incompatible with D211
+    "D213",    # incompatible with D212
+    "E501",    # handled by the formatter
+    "PLR0913", # model constructors legitimately take many arguments
+    "PLR2004", # magic values are UV thresholds and HTTP statuses
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["D", "S101", "PLR2004", "TC", "SLF001"]
+
+[tool.ruff.lint.isort]
+force-sort-within-sections = true
+known-first-party = ["bom_weather_api"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+files = ["src"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+addopts = "--strict-markers --strict-config"
+filterwarnings = ["error"]
+testpaths = ["tests"]
+
+[tool.coverage.run]
+branch = true
+source = ["bom_weather_api"]
+
+[tool.coverage.report]
+fail_under = 95
+show_missing = true

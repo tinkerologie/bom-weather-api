@@ -1,0 +1,138 @@
+<?xml version='1.0' encoding='utf-8'?>
+<product xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.7" xsi:noNamespaceSchemaLocation="http://www.bom.gov.au/schema/v1.7/product.xsd">
+  <amoc>
+    <source>
+      <sender>Australian Government Bureau of Meteorology</sender>
+      <region>Queensland</region>
+      <office>QLDRO</office>
+      <copyright>http://www.bom.gov.au/other/copyright.shtml</copyright>
+      <disclaimer>http://www.bom.gov.au/other/disclaimer.shtml</disclaimer>
+    </source>
+    <identifier>IDQ11295</identifier>
+    <issue-time-utc>2026-10-28T01:30:41Z</issue-time-utc>
+    <issue-time-local tz="EST">2026-10-28T11:30:41+10:00</issue-time-local>
+    <sent-time>2026-10-28T01:30:41Z</sent-time>
+    <expiry-time>2026-10-29T01:30:41Z</expiry-time>
+    <validity-bgn-time-local tz="EST">2026-10-28T09:00:00+10:00</validity-bgn-time-local>
+    <validity-end-time-local tz="EST">2026-11-03T23:59:59+10:00</validity-end-time-local>
+    <next-routine-issue-time-utc>2026-10-28T05:10:00Z</next-routine-issue-time-utc>
+    <next-routine-issue-time-local tz="EST">2026-10-28T15:10:00+10:00</next-routine-issue-time-local>
+    <status>O</status>
+    <service>WSP</service>
+    <sub-service>FPR</sub-service>
+    <product-type>F</product-type>
+    <phase>UPD</phase>
+  </amoc>
+  <forecast>
+    <area aac="QLD_FA001" description="Queensland" type="region" />
+    <area aac="QLD_PW015" description="Southeast Coast" type="public-district" parent-aac="QLD_FA001" />
+    <area aac="QLD_PT001" description="Brisbane" type="location" parent-aac="QLD_PW015">
+      <forecast-period index="0" start-time-local="2026-10-28T09:00:00+10:00" end-time-local="2026-10-29T00:00:00+10:00" start-time-utc="2026-10-27T23:00:00Z" end-time-utc="2026-10-28T14:00:00Z">
+        <element type="forecast_icon_code">11</element>
+        <element type="air_temperature_maximum" units="Celsius">29</element>
+        <text type="precis">Shower or two.</text>
+        <text type="probability_of_precipitation">50%</text>
+      </forecast-period>
+      <forecast-period index="1" start-time-local="2026-10-29T00:00:00+10:00" end-time-local="2026-10-30T00:00:00+10:00" start-time-utc="2026-10-28T14:00:00Z" end-time-utc="2026-10-29T14:00:00Z">
+        <element type="forecast_icon_code">3</element>
+        <element type="air_temperature_minimum" units="Celsius">17</element>
+        <element type="air_temperature_maximum" units="Celsius">28</element>
+        <text type="precis">Mostly sunny.</text>
+        <text type="probability_of_precipitation">10%</text>
+      </forecast-period>
+      <forecast-period index="2" start-time-local="2026-10-30T00:00:00+10:00" end-time-local="2026-10-31T00:00:00+10:00" start-time-utc="2026-10-29T14:00:00Z" end-time-utc="2026-10-30T14:00:00Z">
+        <element type="forecast_icon_code">3</element>
+        <element type="air_temperature_minimum" units="Celsius">17</element>
+        <element type="air_temperature_maximum" units="Celsius">26</element>
+        <text type="precis">Partly cloudy.</text>
+        <text type="probability_of_precipitation">20%</text>
+      </forecast-period>
+      <forecast-period index="3" start-time-local="2026-10-31T00:00:00+10:00" end-time-local="2026-11-01T00:00:00+10:00" start-time-utc="2026-10-30T14:00:00Z" end-time-utc="2026-10-31T14:00:00Z">
+        <element type="forecast_icon_code">17</element>
+        <element type="precipitation_range">0 to 1 mm</element>
+        <element type="air_temperature_minimum" units="Celsius">18</element>
+        <element type="air_temperature_maximum" units="Celsius">26</element>
+        <text type="precis">Possible shower.</text>
+        <text type="probability_of_precipitation">40%</text>
+      </forecast-period>
+      <forecast-period index="4" start-time-local="2026-11-01T00:00:00+10:00" end-time-local="2026-11-02T00:00:00+10:00" start-time-utc="2026-10-31T14:00:00Z" end-time-utc="2026-11-01T14:00:00Z">
+        <element type="forecast_icon_code">11</element>
+        <element type="precipitation_range">0 to 6 mm</element>
+        <element type="air_temperature_minimum" units="Celsius">18</element>
+        <element type="air_temperature_maximum" units="Celsius">28</element>
+        <text type="precis">Shower or two.</text>
+        <text type="probability_of_precipitation">70%</text>
+      </forecast-period>
+      <forecast-period index="5" start-time-local="2026-11-02T00:00:00+10:00" end-time-local="2026-11-03T00:00:00+10:00" start-time-utc="2026-11-01T14:00:00Z" end-time-utc="2026-11-02T14:00:00Z">
+        <element type="forecast_icon_code">11</element>
+        <element type="precipitation_range">0 to 3 mm</element>
+        <element type="air_temperature_minimum" units="Celsius">19</element>
+        <element type="air_temperature_maximum" units="Celsius">29</element>
+        <text type="precis">Shower or two.</text>
+        <text type="probability_of_precipitation">50%</text>
+      </forecast-period>
+      <forecast-period index="6" start-time-local="2026-11-03T00:00:00+10:00" end-time-local="2026-11-04T00:00:00+10:00" start-time-utc="2026-11-02T14:00:00Z" end-time-utc="2026-11-03T14:00:00Z">
+        <element type="forecast_icon_code">17</element>
+        <element type="precipitation_range">0 to 3 mm</element>
+        <element type="air_temperature_minimum" units="Celsius">19</element>
+        <element type="air_temperature_maximum" units="Celsius">28</element>
+        <text type="precis">Possible shower.</text>
+        <text type="probability_of_precipitation">40%</text>
+      </forecast-period>
+    </area>
+    <area aac="QLD_PT021" description="Toowoomba" type="location" parent-aac="QLD_PW013">
+      <forecast-period index="0" start-time-local="2026-10-28T09:00:00+10:00" end-time-local="2026-10-29T00:00:00+10:00" start-time-utc="2026-10-27T23:00:00Z" end-time-utc="2026-10-28T14:00:00Z">
+        <element type="forecast_icon_code">17</element>
+        <element type="air_temperature_maximum" units="Celsius">23</element>
+        <text type="precis">Possible shower.</text>
+        <text type="probability_of_precipitation">40%</text>
+      </forecast-period>
+      <forecast-period index="1" start-time-local="2026-10-29T00:00:00+10:00" end-time-local="2026-10-30T00:00:00+10:00" start-time-utc="2026-10-28T14:00:00Z" end-time-utc="2026-10-29T14:00:00Z">
+        <element type="forecast_icon_code">1</element>
+        <element type="air_temperature_minimum" units="Celsius">12</element>
+        <element type="air_temperature_maximum" units="Celsius">25</element>
+        <text type="precis">Sunny.</text>
+        <text type="probability_of_precipitation">5%</text>
+      </forecast-period>
+      <forecast-period index="2" start-time-local="2026-10-30T00:00:00+10:00" end-time-local="2026-10-31T00:00:00+10:00" start-time-utc="2026-10-29T14:00:00Z" end-time-utc="2026-10-30T14:00:00Z">
+        <element type="forecast_icon_code">3</element>
+        <element type="air_temperature_minimum" units="Celsius">14</element>
+        <element type="air_temperature_maximum" units="Celsius">23</element>
+        <text type="precis">Partly cloudy.</text>
+        <text type="probability_of_precipitation">10%</text>
+      </forecast-period>
+      <forecast-period index="3" start-time-local="2026-10-31T00:00:00+10:00" end-time-local="2026-11-01T00:00:00+10:00" start-time-utc="2026-10-30T14:00:00Z" end-time-utc="2026-10-31T14:00:00Z">
+        <element type="forecast_icon_code">17</element>
+        <element type="precipitation_range">0 to 1 mm</element>
+        <element type="air_temperature_minimum" units="Celsius">14</element>
+        <element type="air_temperature_maximum" units="Celsius">21</element>
+        <text type="precis">Possible shower.</text>
+        <text type="probability_of_precipitation">40%</text>
+      </forecast-period>
+      <forecast-period index="4" start-time-local="2026-11-01T00:00:00+10:00" end-time-local="2026-11-02T00:00:00+10:00" start-time-utc="2026-10-31T14:00:00Z" end-time-utc="2026-11-01T14:00:00Z">
+        <element type="forecast_icon_code">16</element>
+        <element type="precipitation_range">0 to 9 mm</element>
+        <element type="air_temperature_minimum" units="Celsius">15</element>
+        <element type="air_temperature_maximum" units="Celsius">25</element>
+        <text type="precis">Showers. Possible storm.</text>
+        <text type="probability_of_precipitation">80%</text>
+      </forecast-period>
+      <forecast-period index="5" start-time-local="2026-11-02T00:00:00+10:00" end-time-local="2026-11-03T00:00:00+10:00" start-time-utc="2026-11-01T14:00:00Z" end-time-utc="2026-11-02T14:00:00Z">
+        <element type="forecast_icon_code">3</element>
+        <element type="precipitation_range">0 to 1 mm</element>
+        <element type="air_temperature_minimum" units="Celsius">15</element>
+        <element type="air_temperature_maximum" units="Celsius">27</element>
+        <text type="precis">Partly cloudy.</text>
+        <text type="probability_of_precipitation">30%</text>
+      </forecast-period>
+      <forecast-period index="6" start-time-local="2026-11-03T00:00:00+10:00" end-time-local="2026-11-04T00:00:00+10:00" start-time-utc="2026-11-02T14:00:00Z" end-time-utc="2026-11-03T14:00:00Z">
+        <element type="forecast_icon_code">11</element>
+        <element type="precipitation_range">0 to 4 mm</element>
+        <element type="air_temperature_minimum" units="Celsius">17</element>
+        <element type="air_temperature_maximum" units="Celsius">26</element>
+        <text type="precis">Shower or two.</text>
+        <text type="probability_of_precipitation">50%</text>
+      </forecast-period>
+    </area>
+  </forecast>
+</product>
