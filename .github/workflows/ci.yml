@@ -15,6 +15,7 @@ concurrency:
 
 jobs:
   lint:
+    timeout-minutes: 30
     name: Lint
     runs-on: ubuntu-latest
     steps:
@@ -38,6 +39,7 @@ jobs:
         run: uv run mypy
 
   security:
+    timeout-minutes: 30
     name: Security scan
     runs-on: ubuntu-latest
     steps:
@@ -55,6 +57,7 @@ jobs:
           uvx pip-audit --requirement requirements.txt --disable-pip --no-deps
 
   test:
+    timeout-minutes: 30
     name: Test (Python ${{ matrix.python-version }})
     runs-on: ubuntu-latest
     permissions:
@@ -83,7 +86,7 @@ jobs:
         if: matrix.python-version == '3.14'
         uses: codecov/codecov-action@303a32d7a59b442fa8d48b6a1cc6825c09c847a5 # v7.1.1
         with:
-          use_oidc: true
+          use_oidc: ${{ github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository }}
           files: ./coverage.xml
           disable_search: true
           fail_ci_if_error: false
